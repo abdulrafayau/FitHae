@@ -1,0 +1,19 @@
+{
+  "name": "fithae-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm install && npm run build",
+    "install": "npm install && cd client && npm install && cd ../server && npm install"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.6.2",
+    "cors": "^2.8.6",
+    "request-ip": "^3.3.0",
+    "axios": "^1.16.0",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3",
+    "dotenv": "^17.4.2"
+  }
+}
