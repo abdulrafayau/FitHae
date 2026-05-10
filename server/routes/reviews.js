@@ -4,6 +4,23 @@ const mongoose = require('mongoose');
 const Review = require('../models/Review');
 const auth = require('../middleware/auth');
 
+// @route   GET api/reviews/leaderboard
+// @desc    Get top reviewers
+router.get('/leaderboard', async (req, res) => {
+    try {
+        const leaderboard = await Review.aggregate([
+            { $match: { userId: { $ne: null } } },
+            { $group: { _id: "$userId", username: { $first: "$username" }, reviewCount: { $sum: 1 } } },
+            { $sort: { reviewCount: -1 } },
+            { $limit: 10 }
+        ]);
+        res.json(leaderboard);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // @route   GET api/reviews/:hotelId
 // @desc    Get reviews for a specific hotel
 router.get('/:hotelId', async (req, res) => {
@@ -18,7 +35,7 @@ router.get('/:hotelId', async (req, res) => {
 // @route   POST api/reviews
 // @desc    Add a review (Guest or User)
 router.post('/', async (req, res) => {
-    const { hotelId, username, foodRating, environmentRating, comment, userId } = req.body;
+    const { hotelId, username, foodRating, environmentRating, comment, userId, bestItem } = req.body;
     const clientIp = req.clientIp || req.ip;
 
     try {
@@ -44,6 +61,7 @@ router.post('/', async (req, res) => {
             username: username || 'Guest',
             foodRating: foodRating || 5,
             environmentRating: environmentRating || 5,
+            bestItem: bestItem || '',
             comment
         });
 

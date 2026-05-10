@@ -8,8 +8,8 @@ const auth = require('../middleware/auth');
 // @desc    Get all hotels from DB (Manual entries)
 router.get('/', async (req, res) => {
     try {
-        const { city, search } = req.query;
-        let query = {};
+        const { city, search, status } = req.query;
+        let query = { status: status || 'approved' }; // default to approved
         
         if (city) query.city = new RegExp(city, 'i');
         if (search) query.name = new RegExp(search, 'i');
@@ -37,12 +37,12 @@ router.get('/:id', async (req, res) => {
 });
 
 // @route   POST api/hotels
-// @desc    Register a new hotel (Manual Entry)
+// @desc    Register a new hotel (User suggests or Admin adds)
 router.post('/', auth, async (req, res) => {
     const { name, description, address, city, imageUrl, lat, lon, amenities, priceRange } = req.body;
     try {
         const user = await mongoose.model('User').findById(req.user.id);
-        if (user.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+        const status = user.role === 'admin' ? 'approved' : 'pending';
 
         const newHotel = new Hotel({
             name,
@@ -52,7 +52,8 @@ router.post('/', auth, async (req, res) => {
             imageUrl,
             coordinates: { lat, lon },
             amenities,
-            priceRange
+            priceRange,
+            status
         });
         await newHotel.save();
         res.json(newHotel);
@@ -98,6 +99,43 @@ router.patch('/:id/sponsor', auth, async (req, res) => {
         res.json(hotel);
     } catch (err) {
         res.status(500).json({ message: 'Error updating sponsorship' });
+    }
+});
+
+// @route   PATCH api/hotels/:id/unsponsor
+router.patch('/:id/unsponsor', auth, async (req, res) => {
+    try {
+        const user = await mongoose.model('User').findById(req.user.id);
+        if (user.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
+        const hotel = await Hotel.findById(req.params.id);
+        if (!hotel) return res.status(404).json({ message: 'Hotel not found' });
+
+        hotel.isSponsored = false;
+        hotel.sponsoredUntil = null;
+        await hotel.save();
+
+        res.json(hotel);
+    } catch (err) {
+        res.status(500).json({ message: 'Error removing sponsorship' });
+    }
+});
+
+// @route   PATCH api/hotels/:id/approve
+router.patch('/:id/approve', auth, async (req, res) => {
+    try {
+        const user = await mongoose.model('User').findById(req.user.id);
+        if (user.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
+        const hotel = await Hotel.findById(req.params.id);
+        if (!hotel) return res.status(404).json({ message: 'Hotel not found' });
+
+        hotel.status = 'approved';
+        await hotel.save();
+
+        res.json(hotel);
+    } catch (err) {
+        res.status(500).json({ message: 'Error approving hotel' });
     }
 });
 

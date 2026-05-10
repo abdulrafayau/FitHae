@@ -9,16 +9,20 @@ import { QRCodeComponent } from 'angularx-qrcode'; // Import QRCode Component
   standalone: true,
   imports: [CommonModule, FormsModule, QRCodeComponent],
   template: `
-    <div class="min-h-screen bg-slate-50 py-12 px-6 relative">
+    <div class="min-h-screen bg-slate-50 py-12 px-6 relative pt-28">
       <div class="max-w-7xl mx-auto space-y-8">
         
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h1 class="text-4xl font-black text-slate-900 tracking-tight">Admin Control Center</h1>
-            <p class="text-slate-500 italic mt-1">Manage Restaurants, Advanced Reviews, and Users.</p>
+            <p class="text-slate-500 italic mt-1">Manage Restaurants, Approvals, Reviews, and Users.</p>
           </div>
           <div class="flex gap-2 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200">
             <button (click)="currentTab = 'properties'" [class.bg-slate-900]="currentTab === 'properties'" [class.text-white]="currentTab === 'properties'" class="px-6 py-2 rounded-xl font-bold transition-all text-sm hover:bg-slate-100">Restaurants</button>
+            <button (click)="currentTab = 'pending'" [class.bg-slate-900]="currentTab === 'pending'" [class.text-white]="currentTab === 'pending'" class="px-6 py-2 rounded-xl font-bold transition-all text-sm hover:bg-slate-100 relative">
+               Approvals
+               <span *ngIf="pendingHotels.length > 0" class="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-[10px] flex items-center justify-center font-black animate-pulse">{{ pendingHotels.length }}</span>
+            </button>
             <button (click)="currentTab = 'reviews'" [class.bg-slate-900]="currentTab === 'reviews'" [class.text-white]="currentTab === 'reviews'" class="px-6 py-2 rounded-xl font-bold transition-all text-sm hover:bg-slate-100">Reviews</button>
             <button (click)="currentTab = 'users'" [class.bg-slate-900]="currentTab === 'users'" [class.text-white]="currentTab === 'users'" class="px-6 py-2 rounded-xl font-bold transition-all text-sm hover:bg-slate-100">Users</button>
           </div>
@@ -132,6 +136,57 @@ import { QRCodeComponent } from 'angularx-qrcode'; // Import QRCode Component
                         </button>
                         <button (click)="deleteHotel(hotel._id)" class="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-red-500 hover:border-red-500 transition-all shadow-sm" title="Delete Restaurant">
                           <span class="material-symbols-outlined text-sm">delete</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Approvals Tab -->
+        <div *ngIf="currentTab === 'pending'" class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div class="bg-white rounded-[2rem] shadow-xl overflow-hidden border border-red-100">
+            <div class="p-8 border-b border-red-100 flex justify-between items-center bg-red-50/30">
+              <h2 class="text-2xl font-bold text-red-900">Pending User Suggestions</h2>
+              <div class="flex items-center gap-2 text-red-400 text-sm font-medium">
+                <span class="material-symbols-outlined text-sm">pending_actions</span> {{ pendingHotels.length }} waiting
+              </div>
+            </div>
+            
+            <div *ngIf="pendingHotels.length === 0" class="p-12 text-center text-slate-400">
+              <span class="material-symbols-outlined text-4xl mb-4 opacity-50">check_circle</span>
+              <p>All caught up! No pending restaurants.</p>
+            </div>
+
+            <div *ngIf="pendingHotels.length > 0" class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead class="bg-white text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-100">
+                  <tr>
+                    <th class="px-8 py-5">Suggested Restaurant</th>
+                    <th class="px-8 py-5">Location</th>
+                    <th class="px-8 py-5 text-right">Admin Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                  <tr *ngFor="let hotel of pendingHotels" class="hover:bg-red-50/30 transition-colors">
+                    <td class="px-8 py-6">
+                      <div class="font-bold text-slate-900 text-lg">{{ hotel.name }}</div>
+                      <p class="text-xs text-slate-500 line-clamp-1 italic mt-1 max-w-xs">{{ hotel.description }}</p>
+                    </td>
+                    <td class="px-8 py-6">
+                      <div class="text-slate-900 font-bold">{{ hotel.city }}</div>
+                      <div class="text-xs text-slate-400">{{ hotel.address }}</div>
+                    </td>
+                    <td class="px-8 py-6 text-right">
+                      <div class="flex justify-end gap-2">
+                        <button (click)="approveHotel(hotel._id)" class="px-4 py-2 bg-green-50 text-green-600 rounded-xl font-bold hover:bg-green-500 hover:text-white transition-colors border border-green-200 hover:border-green-500 flex items-center gap-1">
+                          <span class="material-symbols-outlined text-sm">check</span> Approve
+                        </button>
+                        <button (click)="deleteHotel(hotel._id)" class="px-4 py-2 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-colors border border-red-200 hover:border-red-500 flex items-center gap-1">
+                          <span class="material-symbols-outlined text-sm">close</span> Reject
                         </button>
                       </div>
                     </td>
@@ -277,9 +332,10 @@ import { QRCodeComponent } from 'angularx-qrcode'; // Import QRCode Component
   `
 })
 export class AdminComponent implements OnInit {
-  currentTab: 'properties' | 'reviews' | 'users' = 'properties';
+  currentTab: 'properties' | 'pending' | 'reviews' | 'users' = 'properties';
   
   hotels: any[] = [];
+  pendingHotels: any[] = [];
   reviews: any[] = [];
   users: any[] = [];
   
@@ -306,13 +362,33 @@ export class AdminComponent implements OnInit {
 
   loadAllData() {
     this.loadHotels();
+    this.loadPendingHotels();
     this.loadReviews();
     this.loadUsers();
   }
 
-  // --- Properties ---
+  // --- Properties & Approvals ---
   loadHotels() {
+    // Regular load gets 'approved' status by default from backend
     this.api.getHotels().subscribe(res => this.hotels = res);
+  }
+
+  loadPendingHotels() {
+    this.api.getHotels(undefined, undefined, 'pending').subscribe({
+      next: (res) => this.pendingHotels = res
+    });
+  }
+
+  approveHotel(id: string) {
+    if (confirm('Approve this restaurant to make it public?')) {
+      this.api.approveHotel(id).subscribe({
+        next: () => {
+          this.loadPendingHotels();
+          this.loadHotels();
+        },
+        error: (err) => alert('Approval failed: ' + (err.error?.message || 'Error'))
+      });
+    }
   }
 
   onRegisterHotel() {

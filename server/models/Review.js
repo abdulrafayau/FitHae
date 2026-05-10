@@ -8,6 +8,7 @@ const reviewSchema = new mongoose.Schema({
     foodRating: { type: Number, required: true, min: 1, max: 5, default: 5 },
     environmentRating: { type: Number, required: true, min: 1, max: 5, default: 5 },
     rating: { type: Number, min: 1, max: 5 }, // Kept for backward compatibility
+    bestItem: { type: String, default: '' },
     comment: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
 });

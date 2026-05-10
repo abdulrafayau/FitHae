@@ -9,11 +9,11 @@ import { ApiService } from '../../services/api.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
-    <div class="min-h-screen bg-slate-50 cursor-custom">
+    <div class="min-h-screen bg-slate-50 cursor-custom pt-24">
       <!-- Image Banner -->
-      <div class="h-[40vh] md:h-[60vh] relative overflow-hidden">
+      <div class="h-[40vh] md:h-[60vh] relative overflow-hidden mt-2 rounded-t-[3rem] mx-4 md:mx-6 shadow-2xl">
         <img [src]="hotel?.imageUrl" class="w-full h-full object-cover transition-transform duration-1000 hover:scale-105" alt="Banner">
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
         <div class="absolute bottom-10 left-10 text-white z-10">
           <div class="flex items-center gap-2 mb-2">
             <span class="px-3 py-1 bg-fithae-yellow text-slate-900 text-[10px] font-black rounded-full uppercase tracking-widest shadow-lg">Premium Dining</span>
@@ -27,6 +27,16 @@ import { ApiService } from '../../services/api.service';
       <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-12">
+          
+          <!-- Best Item Highlight -->
+          <div *ngIf="popularItem" class="bg-gradient-to-r from-fithae-yellow to-yellow-300 rounded-[2rem] p-8 shadow-xl relative overflow-hidden group hover:shadow-2xl transition-all">
+            <div class="absolute right-[-20px] top-[-20px] opacity-10 group-hover:scale-110 transition-transform duration-700">
+               <span class="material-symbols-outlined text-[150px]">restaurant_menu</span>
+            </div>
+            <p class="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1 opacity-80">Community Favorite</p>
+            <h3 class="text-3xl font-black text-slate-900">Must Try: {{ popularItem }}</h3>
+          </div>
+
           <div class="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl border border-slate-100 transition-all hover:shadow-2xl">
             <h2 class="text-2xl font-bold text-slate-900 mb-6">About the Restaurant</h2>
             <p class="text-slate-600 leading-relaxed text-lg italic">"{{ hotel?.description }}"</p>
@@ -71,7 +81,7 @@ import { ApiService } from '../../services/api.service';
                 </div>
               </div>
               
-              <div class="flex gap-4 mb-4">
+              <div class="flex flex-wrap gap-4 mb-4">
                 <div class="bg-slate-50 px-3 py-2 rounded-xl flex items-center gap-2 border border-slate-100">
                   <span class="material-symbols-outlined text-sm text-fithae-yellow fill-1">restaurant</span>
                   <div>
@@ -86,6 +96,13 @@ import { ApiService } from '../../services/api.service';
                     <div class="text-sm font-black text-slate-900">{{ review.environmentRating }}/5</div>
                   </div>
                 </div>
+                <div *ngIf="review.bestItem" class="bg-fithae-yellow/10 px-3 py-2 rounded-xl flex items-center gap-2 border border-fithae-yellow/30">
+                  <span class="material-symbols-outlined text-sm text-fithae-yellow">star</span>
+                  <div>
+                    <div class="text-[10px] font-bold text-yellow-700 uppercase">Ate</div>
+                    <div class="text-sm font-black text-slate-900">{{ review.bestItem }}</div>
+                  </div>
+                </div>
               </div>
 
               <p class="text-slate-600 italic leading-relaxed">"{{ review.comment }}"</p>
@@ -95,7 +112,7 @@ import { ApiService } from '../../services/api.service';
 
         <!-- Sidebar (Review Form) -->
         <div class="space-y-8">
-          <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl sticky top-8 transition-all hover:shadow-fithae-yellow/10">
+          <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl sticky top-28 transition-all hover:shadow-fithae-yellow/10">
             <h3 class="text-2xl font-bold mb-6 tracking-tight">Rate Your Experience</h3>
             
             <form (ngSubmit)="onPostReview()" class="space-y-6">
@@ -133,12 +150,18 @@ import { ApiService } from '../../services/api.service';
               <div>
                 <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2 mt-4">Display Name</label>
                 <input type="text" name="username" [(ngModel)]="newReview.username" 
-                  class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-fithae-yellow focus:bg-white/10 transition-all font-medium text-white placeholder:text-white/30">
+                  class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-fithae-yellow focus:bg-white/10 transition-all font-medium text-white placeholder:text-white/30" placeholder="e.g. Guest">
+              </div>
+
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">Best Item You Ate (Optional)</label>
+                <input type="text" name="bestItem" [(ngModel)]="newReview.bestItem" 
+                  class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-fithae-yellow focus:bg-white/10 transition-all font-medium text-white placeholder:text-white/30" placeholder="e.g. Alfredo Pasta">
               </div>
 
               <div>
                 <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">Your Story</label>
-                <textarea name="comment" [(ngModel)]="newReview.comment" rows="4"
+                <textarea name="comment" [(ngModel)]="newReview.comment" rows="4" required
                   class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl outline-none focus:border-fithae-yellow focus:bg-white/10 transition-all font-medium text-white placeholder:text-white/30"
                   placeholder="Tell us about the taste and atmosphere..."></textarea>
               </div>
@@ -161,10 +184,12 @@ import { ApiService } from '../../services/api.service';
 export class HotelDetailComponent implements OnInit {
   hotel: any;
   reviews: any[] = [];
+  popularItem = '';
   newReview = {
     username: '',
     foodRating: 5,
     environmentRating: 5,
+    bestItem: '',
     comment: ''
   };
   loading = false;
@@ -184,6 +209,7 @@ export class HotelDetailComponent implements OnInit {
           foodRating: r.foodRating || r.rating || 5,
           environmentRating: r.environmentRating || r.rating || 5
         }));
+        this.calculatePopularItem();
       });
     }
     
@@ -193,7 +219,30 @@ export class HotelDetailComponent implements OnInit {
     }
   }
 
+  calculatePopularItem() {
+    const items = this.reviews.map(r => r.bestItem).filter(i => i && i.trim() !== '');
+    if (items.length === 0) {
+      this.popularItem = '';
+      return;
+    }
+    
+    const frequency: any = {};
+    let maxFreq = 0;
+    let mostPopular = '';
+
+    for (const item of items) {
+      const formattedItem = item.toLowerCase().trim();
+      frequency[formattedItem] = (frequency[formattedItem] || 0) + 1;
+      if (frequency[formattedItem] > maxFreq) {
+        maxFreq = frequency[formattedItem];
+        mostPopular = item; // Keep original casing
+      }
+    }
+    this.popularItem = mostPopular;
+  }
+
   onPostReview() {
+    if(!this.newReview.comment) return;
     this.loading = true;
     this.message = '';
     const user = this.api.getCurrentUser();
@@ -206,7 +255,9 @@ export class HotelDetailComponent implements OnInit {
     this.api.postReview(reviewData).subscribe({
       next: (res) => {
         this.reviews.unshift(res);
+        this.calculatePopularItem();
         this.newReview.comment = '';
+        this.newReview.bestItem = '';
         this.message = 'Review posted successfully!';
         this.isError = false;
         this.loading = false;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
@@ -14,7 +14,7 @@ import { ApiService } from '../../services/api.service';
           <a routerLink="/" class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2">
             <span class="text-fithae-pink">Fit</span>Hae
           </a>
-          <div class="hidden md:flex gap-lg">
+          <div class="hidden md:flex gap-lg items-center">
             <a routerLink="/" routerLinkActive="text-primary border-b-2 border-secondary-container" [routerLinkActiveOptions]="{exact: true}" 
                class="text-on-surface-variant hover:text-primary transition-colors font-label-bold text-label-bold pb-1">Restaurants</a>
             <a routerLink="/about" routerLinkActive="text-primary border-b-2 border-secondary-container"
@@ -23,6 +23,11 @@ import { ApiService } from '../../services/api.service';
                class="text-on-surface-variant hover:text-primary transition-colors font-label-bold text-label-bold pb-1">My Reviews</a>
             <a *ngIf="isAdmin()" routerLink="/admin" routerLinkActive="text-primary border-b-2 border-secondary-container"
                class="text-on-surface-variant hover:text-primary transition-colors font-label-bold text-label-bold pb-1">Dashboard</a>
+            
+            <!-- Dark Mode Toggle -->
+            <button (click)="toggleDarkMode()" class="ml-4 p-2 rounded-full hover:bg-slate-100 transition-colors flex items-center justify-center text-slate-500">
+               <span class="material-symbols-outlined text-sm">{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</span>
+            </button>
           </div>
         </div>
         <div class="flex items-center gap-md">
@@ -41,8 +46,31 @@ import { ApiService } from '../../services/api.service';
     </header>
   `
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
+  isDarkMode = false;
+
   constructor(private api: ApiService) {}
+
+  ngOnInit() {
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      this.isDarkMode = true;
+      document.documentElement.classList.add('dark');
+    } else {
+      this.isDarkMode = false;
+      document.documentElement.classList.remove('dark');
+    }
+  }
+
+  toggleDarkMode() {
+    this.isDarkMode = !this.isDarkMode;
+    if (this.isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }
 
   isLoggedIn() { return this.api.isLoggedIn(); }
   isAdmin() {

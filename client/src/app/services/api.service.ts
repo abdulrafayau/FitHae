@@ -50,10 +50,11 @@ export class ApiService {
   }
 
   // Hotels
-  getHotels(city?: string, search?: string): Observable<any> {
+  getHotels(city?: string, search?: string, status?: string): Observable<any> {
     let params: any = {};
     if (city) params.city = city;
     if (search) params.search = search;
+    if (status) params.status = status;
     return this.http.get(`${this.apiUrl}/hotels`, { params });
   }
 
@@ -71,6 +72,18 @@ export class ApiService {
 
   sponsorHotel(id: string, days: number): Observable<any> {
     return this.http.patch(`${this.apiUrl}/hotels/${id}/sponsor`, { days });
+  }
+
+  unsponsorHotel(id: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/hotels/${id}/unsponsor`, {});
+  }
+
+  approveHotel(id: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/hotels/${id}/approve`, {});
+  }
+
+  getLeaderboard(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reviews/leaderboard`);
   }
 
   // Reviews

@@ -15,6 +15,7 @@ const hotelSchema = new mongoose.Schema({
     sponsoredUntil: { type: Date },
     rating: { type: Number, default: 4.5 },
     priceRange: { type: String, default: '$$$' },
+    status: { type: String, enum: ['pending', 'approved'], default: 'approved' },
     createdAt: { type: Date, default: Date.now }
 });
 
