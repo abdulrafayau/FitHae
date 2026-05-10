@@ -16,7 +16,7 @@ import { ApiService } from '../../services/api.service';
           </a>
           <div class="hidden md:flex gap-lg">
             <a routerLink="/" routerLinkActive="text-primary border-b-2 border-secondary-container" [routerLinkActiveOptions]="{exact: true}" 
-               class="text-on-surface-variant hover:text-primary transition-colors font-label-bold text-label-bold pb-1">Hotels</a>
+               class="text-on-surface-variant hover:text-primary transition-colors font-label-bold text-label-bold pb-1">Restaurants</a>
             <a routerLink="/about" routerLinkActive="text-primary border-b-2 border-secondary-container"
                class="text-on-surface-variant hover:text-primary transition-colors font-label-bold text-label-bold pb-1">About Us</a>
             <a *ngIf="isLoggedIn()" routerLink="/profile" routerLinkActive="text-primary border-b-2 border-secondary-container"

@@ -1,13 +1,22 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    hotelId: { type: String, required: true }, // Store as string to handle legacy or new IDs
+    hotelId: { type: String, required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     guestIp: { type: String },
     username: { type: String, required: true },
-    rating: { type: Number, required: true, min: 1, max: 5 },
+    foodRating: { type: Number, required: true, min: 1, max: 5, default: 5 },
+    environmentRating: { type: Number, required: true, min: 1, max: 5, default: 5 },
+    rating: { type: Number, min: 1, max: 5 }, // Kept for backward compatibility
     comment: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
+});
+
+reviewSchema.pre('save', function(next) {
+    if (this.foodRating && this.environmentRating) {
+        this.rating = (this.foodRating + this.environmentRating) / 2;
+    }
+    next();
 });
 
 module.exports = mongoose.model('Review', reviewSchema);

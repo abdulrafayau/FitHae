@@ -18,7 +18,7 @@ router.get('/:hotelId', async (req, res) => {
 // @route   POST api/reviews
 // @desc    Add a review (Guest or User)
 router.post('/', async (req, res) => {
-    const { hotelId, username, rating, comment, userId } = req.body;
+    const { hotelId, username, foodRating, environmentRating, comment, userId } = req.body;
     const clientIp = req.clientIp || req.ip;
 
     try {
@@ -42,7 +42,8 @@ router.post('/', async (req, res) => {
             userId: userId || null,
             guestIp: userId ? null : clientIp,
             username: username || 'Guest',
-            rating,
+            foodRating: foodRating || 5,
+            environmentRating: environmentRating || 5,
             comment
         });
 
