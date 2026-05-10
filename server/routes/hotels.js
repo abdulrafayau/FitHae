@@ -38,9 +38,12 @@ router.get('/:id', async (req, res) => {
 
 // @route   POST api/hotels
 // @desc    Register a new hotel (Manual Entry)
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { name, description, address, city, imageUrl, lat, lon, amenities, priceRange } = req.body;
     try {
+        const user = await mongoose.model('User').findById(req.user.id);
+        if (user.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
         const newHotel = new Hotel({
             name,
             description,
@@ -56,6 +59,25 @@ router.post('/', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error registering hotel' });
+    }
+});
+
+// @route   DELETE api/hotels/:id
+// @desc    Delete a hotel
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        const user = await mongoose.model('User').findById(req.user.id);
+        if (user.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
+        const hotel = await Hotel.findByIdAndDelete(req.params.id);
+        if (!hotel) return res.status(404).json({ message: 'Hotel not found' });
+        
+        // Also delete associated reviews
+        await mongoose.model('Review').deleteMany({ hotelId: req.params.id });
+
+        res.json({ message: 'Hotel removed' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error deleting hotel' });
     }
 });
 

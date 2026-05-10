@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Review = require('../models/Review');
-const auth = require('../middleware/auth'); // I'll create this middleware next
+const auth = require('../middleware/auth');
 
 // @route   GET api/reviews/:hotelId
 // @desc    Get reviews for a specific hotel
@@ -50,6 +51,38 @@ router.post('/', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error posting review' });
+    }
+});
+
+// @route   GET api/reviews/all
+// @desc    Get all reviews (Admin only)
+router.get('/all', auth, async (req, res) => {
+    try {
+        const user = await mongoose.model('User').findById(req.user.id);
+        if (user.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
+        const reviews = await Review.find().sort({ createdAt: -1 }).populate('hotelId', 'name');
+        res.json(reviews);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching all reviews' });
+    }
+});
+
+// @route   DELETE api/reviews/:id
+// @desc    Delete a review (Admin only)
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        const user = await mongoose.model('User').findById(req.user.id);
+        if (user.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
+        const review = await Review.findByIdAndDelete(req.params.id);
+        if (!review) return res.status(404).json({ message: 'Review not found' });
+
+        res.json({ message: 'Review deleted' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error deleting review' });
     }
 });
 

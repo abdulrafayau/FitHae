@@ -47,7 +47,7 @@ export class NavbarComponent {
   isLoggedIn() { return this.api.isLoggedIn(); }
   isAdmin() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    return user.role === 'admin' || user.username === 'admin'; // Simple check
+    return user.role === 'admin' || user.username === '@admin';
   }
   getUserName() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');

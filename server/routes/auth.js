@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
         const payload = { user: { id: user.id } };
         jwt.sign(payload, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' }, (err, token) => {
             if (err) throw err;
-            res.json({ token, user: { id: user.id, username: user.username, fullName: user.fullName, email: user.email, contact: user.contact } });
+            res.json({ token, user: { id: user.id, username: user.username, fullName: user.fullName, email: user.email, contact: user.contact, role: user.role } });
         });
     } catch (err) {
         console.error(err);
@@ -96,6 +96,38 @@ router.post('/reset-password', async (req, res) => {
         user.password = await bcrypt.hash(newPassword, salt);
         await user.save();
         res.json({ message: 'Password reset successful' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+    }
+});
+
+// @route   GET api/auth/users
+// @desc    Get all users (Admin only)
+router.get('/users', auth, async (req, res) => {
+    try {
+        const admin = await User.findById(req.user.id);
+        if (admin.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
+        const users = await User.find().select('-password');
+        res.json(users);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+    }
+});
+
+// @route   DELETE api/auth/users/:id
+// @desc    Delete a user (Admin only)
+router.delete('/users/:id', auth, async (req, res) => {
+    try {
+        const admin = await User.findById(req.user.id);
+        if (admin.role !== 'admin') return res.status(403).json({ message: 'Not authorized' });
+
+        if (req.params.id === req.user.id) return res.status(400).json({ message: 'Cannot delete yourself' });
+
+        await User.findByIdAndDelete(req.params.id);
+        res.json({ message: 'User removed' });
     } catch (err) {
         console.error(err);
         res.status(500).send('Server error');

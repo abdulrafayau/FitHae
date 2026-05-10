@@ -31,6 +31,24 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/auth/reset-password`, data);
   }
 
+  // Admin - Users
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/auth/users`);
+  }
+
+  deleteUser(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/auth/users/${id}`);
+  }
+
+  // Admin - Reviews
+  getAllReviews(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/reviews/all`);
+  }
+
+  deleteReview(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/reviews/${id}`);
+  }
+
   // Hotels
   getHotels(city?: string, search?: string): Observable<any> {
     let params: any = {};
@@ -45,6 +63,10 @@ export class ApiService {
 
   registerHotel(hotelData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/hotels`, hotelData);
+  }
+
+  deleteHotel(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/hotels/${id}`);
   }
 
   sponsorHotel(id: string, days: number): Observable<any> {
