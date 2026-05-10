@@ -259,14 +259,14 @@ import { QRCodeComponent } from 'angularx-qrcode'; // Import QRCode Component
             <p class="text-sm text-slate-500 italic mt-1">{{ selectedRestaurantName }}</p>
           </div>
 
-          <div class="flex justify-center p-4 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
+          <div class="flex justify-center p-4 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner" id="qr-container">
             <!-- Functional QR Code -->
             <qrcode [qrdata]="qrUrl" [width]="220" [errorCorrectionLevel]="'M'"></qrcode>
           </div>
 
           <div class="mt-8 text-center space-y-3">
              <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scan to view & review directly</p>
-             <button class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-colors shadow-lg flex items-center justify-center gap-2">
+             <button (click)="printQR()" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-colors shadow-lg flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-sm">print</span> Print QR Stand
              </button>
           </div>
@@ -348,9 +348,8 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  // --- QR Code Modals ---
+  // --- QR Code Modals & Printing ---
   openQRModal(id: string, name: string) {
-    // Generate the direct URL to the restaurant's review page
     this.qrUrl = `${window.location.origin}/hotel/${id}`;
     this.selectedRestaurantName = name;
     this.showQRModal = true;
@@ -360,6 +359,137 @@ export class AdminComponent implements OnInit {
     this.showQRModal = false;
     this.qrUrl = '';
     this.selectedRestaurantName = '';
+  }
+
+  printQR() {
+    // Get the QR canvas image data
+    const qrCanvas = document.querySelector('#qr-container canvas') as HTMLCanvasElement;
+    if (!qrCanvas) {
+      alert('QR Code is still rendering, please wait a second.');
+      return;
+    }
+    const qrImageURL = qrCanvas.toDataURL('image/png');
+
+    // Create a new window for printing the Stand Design
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print QR Stand - ${this.selectedRestaurantName}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Lexend:wght@700&display=swap');
+            body {
+              margin: 0;
+              padding: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              background-color: #fff;
+              font-family: 'Outfit', sans-serif;
+            }
+            .stand-container {
+              width: 4in;
+              height: 6in;
+              border: 2px solid #0f172a;
+              border-radius: 20px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: space-between;
+              padding: 40px 20px;
+              box-sizing: border-box;
+              text-align: center;
+              box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+            .header h1 {
+              font-family: 'Lexend', sans-serif;
+              font-size: 24px;
+              color: #0f172a;
+              margin: 0 0 5px 0;
+            }
+            .header p {
+              color: #64748b;
+              font-size: 14px;
+              margin: 0;
+            }
+            .qr-wrapper {
+              background: #fff;
+              padding: 15px;
+              border-radius: 15px;
+              border: 2px dashed #cbd5e1;
+            }
+            .qr-wrapper img {
+              width: 200px;
+              height: 200px;
+            }
+            .instructions {
+              font-weight: 700;
+              color: #0f172a;
+              font-size: 16px;
+              text-transform: uppercase;
+              letter-spacing: 2px;
+            }
+            .footer {
+              margin-top: auto;
+              padding-top: 20px;
+              border-top: 1px solid #e2e8f0;
+              width: 100%;
+            }
+            .brand {
+              font-family: 'Lexend', sans-serif;
+              font-size: 20px;
+              font-weight: 900;
+              color: #0f172a;
+            }
+            .brand span {
+              color: #fbbf24;
+              font-style: italic;
+            }
+            .slogan {
+              font-size: 10px;
+              color: #94a3b8;
+              margin-top: 4px;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="stand-container">
+            <div class="header">
+              <h1>${this.selectedRestaurantName}</h1>
+              <p>Premium Dining Experience</p>
+            </div>
+            
+            <div class="qr-wrapper">
+              <img src="${qrImageURL}" alt="Scan to Review" />
+            </div>
+            
+            <div class="instructions">
+              Scan to view menu & review us
+            </div>
+            
+            <div class="footer">
+              <div class="brand"><span>Fit</span>Hae</div>
+              <div class="slogan">Verified Premium Stays & Dining</div>
+            </div>
+          </div>
+          <script>
+            // Wait for image to load before triggering print
+            window.onload = function() {
+              setTimeout(() => {
+                window.print();
+                window.close();
+              }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   }
 
   // --- Reviews ---
