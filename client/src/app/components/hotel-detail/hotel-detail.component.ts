@@ -3,238 +3,176 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
-import { ThreeAnimationComponent } from '../three-animation/three-animation.component';
 
 @Component({
   selector: 'app-hotel-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ThreeAnimationComponent],
+  imports: [CommonModule, FormsModule, RouterModule],
   template: `
-    <app-three-animation [show]="showFitHae"></app-three-animation>
-    
-    <main class="mt-xxl pt-lg">
-      <!-- Hero Gallery -->
-      <section class="max-w-container-max mx-auto px-lg mt-md">
-        <div class="grid grid-cols-12 grid-rows-2 gap-md h-[500px]">
-          <div class="col-span-12 md:col-span-8 row-span-2 relative overflow-hidden rounded-xl">
-            <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" 
-                 [src]="'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200'" alt="Hotel Main">
-            <div class="absolute bottom-lg left-lg bg-primary/20 backdrop-blur-md px-md py-sm rounded-lg text-on-primary">
-              <span class="font-label-caps text-label-caps uppercase">Featured View</span>
-            </div>
+    <div class="min-h-screen bg-slate-50">
+      <!-- Image Banner -->
+      <div class="h-[40vh] md:h-[60vh] relative">
+        <img [src]="hotel?.imageUrl" class="w-full h-full object-cover" alt="Banner">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+        <div class="absolute bottom-10 left-10 text-white">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-3 py-1 bg-fithae-yellow text-slate-900 text-[10px] font-black rounded-full uppercase tracking-widest">Premium Collection</span>
+            <span class="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold rounded-full">{{ hotel?.city }}</span>
           </div>
-          <div class="hidden md:block col-span-4 row-span-1 overflow-hidden rounded-xl">
-            <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" 
-                 src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600" alt="Detail 1">
-          </div>
-          <div class="hidden md:block col-span-4 row-span-1 overflow-hidden rounded-xl">
-            <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" 
-                 src="https://images.unsplash.com/photo-1544124499-58912cbddaad?q=80&w=600" alt="Detail 2">
-          </div>
+          <h1 class="text-4xl md:text-6xl font-black">{{ hotel?.name }}</h1>
+          <p class="text-white/70 italic mt-2">{{ hotel?.address }}</p>
         </div>
-      </section>
+      </div>
 
-      <!-- Content Grid -->
-      <div class="max-w-container-max mx-auto px-lg py-xl grid grid-cols-12 gap-gutter">
-        <!-- Main Content Area -->
-        <div class="col-span-12 lg:col-span-8">
-          <div class="flex justify-between items-start mb-lg">
-            <div *ngIf="hotel">
-              <div class="flex items-center gap-sm mb-xs">
-                <span class="bg-fithae-yellow text-on-surface px-sm py-xs rounded font-label-caps text-label-caps uppercase tracking-widest font-bold">Fit Stay Score: {{ hotel.rating || '9.5' }}</span>
-                <span class="text-on-surface-variant flex items-center gap-xs font-body-sm text-body-sm">
-                  <span class="material-symbols-outlined text-sm">location_on</span> {{ hotel.city }}, Pakistan
-                </span>
-              </div>
-              <h1 class="font-display-lg text-display-lg mb-xs">{{ hotel.name }}</h1>
-              <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">{{ hotel.address }}</p>
-            </div>
-          </div>
-
-          <!-- Amenities -->
-          <section class="mb-xl bg-surface-container-lowest p-xl rounded-xl shadow-sm border border-outline-variant/30">
-            <h2 class="font-headline-md text-headline-md mb-lg">Refined Amenities</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-lg">
-              <div class="flex flex-col items-start gap-sm">
-                <span class="material-symbols-outlined text-3xl text-fithae-pink">pool</span>
-                <span class="font-label-bold text-label-bold">Infinity Pool</span>
-              </div>
-              <div class="flex flex-col items-start gap-sm">
-                <span class="material-symbols-outlined text-3xl text-fithae-pink">spa</span>
-                <span class="font-label-bold text-label-bold">Full-service Spa</span>
-              </div>
-              <div class="flex flex-col items-start gap-sm">
-                <span class="material-symbols-outlined text-3xl text-fithae-pink">fitness_center</span>
-                <span class="font-label-bold text-label-bold">Fitness Center</span>
-              </div>
-              <div class="flex flex-col items-start gap-sm">
-                <span class="material-symbols-outlined text-3xl text-fithae-pink">restaurant</span>
-                <span class="font-label-bold text-label-bold">Fine Dining</span>
-              </div>
-            </div>
-          </section>
-
-          <!-- Reviews Feed -->
-          <section>
-            <div class="flex items-center justify-between mb-lg">
-              <h2 class="font-headline-md text-headline-md">Guest Perspectives ({{ reviews.length }})</h2>
-              <div class="flex gap-2">
-                 <button class="bg-surface-container-high px-4 py-2 rounded-lg font-label-bold text-sm">Most Recent</button>
-                 <button class="bg-surface-container-high px-4 py-2 rounded-lg font-label-bold text-sm">Highest Rated</button>
-              </div>
-            </div>
-
-            <div class="space-y-lg">
-              <article *ngFor="let review of reviews" class="bg-surface-container-lowest p-lg rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-md transition-shadow">
-                <div class="flex items-center justify-between mb-md">
-                  <div class="flex items-center gap-md">
-                    <img [src]="'https://ui-avatars.com/api/?name=' + review.username + '&background=random'" alt="Reviewer" class="w-12 h-12 rounded-full border border-outline-variant">
-                    <div>
-                      <h4 class="font-label-bold text-label-bold">{{ review.username }}</h4>
-                      <p class="font-body-sm text-body-sm text-on-surface-variant">{{ review.createdAt | date:'mediumDate' }} • Verified Guest</p>
-                    </div>
-                  </div>
-                  <div class="flex gap-xs">
-                    <span *ngFor="let s of [1,2,3,4,5]" class="material-symbols-outlined" 
-                          [class.filled-star]="review.rating >= s" [class.unfilled-star]="review.rating < s">star</span>
-                  </div>
-                </div>
-                <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">{{ review.comment }}</p>
-              </article>
-              
-              <div *ngIf="reviews.length === 0" class="text-center py-10 bg-surface-container-low rounded-xl border border-dashed border-outline-variant">
-                 <p class="text-on-surface-variant italic">Be the first to share your "Fit" experience!</p>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <!-- Sidebar Review Form -->
-        <aside class="col-span-12 lg:col-span-4 space-y-lg">
-          <div class="sticky top-[100px] bg-primary-container p-xl rounded-xl text-white shadow-xl">
-            <h3 class="font-headline-md text-headline-md mb-md">Share Your Experience</h3>
-            <p class="font-body-md opacity-80 mb-lg">Your insights help others find the perfect stay. Every verified review contributes to our community.</p>
+      <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-12">
+          <div class="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">About the Property</h2>
+            <p class="text-slate-600 leading-relaxed text-lg italic">"{{ hotel?.description }}"</p>
             
-            <div *ngIf="successMsg" class="mb-4 p-3 bg-green-500/20 text-green-300 rounded-lg text-sm border border-green-500/30">
-               {{ successMsg }}
+            <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div class="p-4 bg-slate-50 rounded-2xl text-center">
+                <span class="material-symbols-outlined text-primary mb-2">wifi</span>
+                <p class="text-xs font-bold text-slate-500">Free WiFi</p>
+              </div>
+              <div class="p-4 bg-slate-50 rounded-2xl text-center">
+                <span class="material-symbols-outlined text-primary mb-2">pool</span>
+                <p class="text-xs font-bold text-slate-500">Premium Pool</p>
+              </div>
+              <div class="p-4 bg-slate-50 rounded-2xl text-center">
+                <span class="material-symbols-outlined text-primary mb-2">restaurant</span>
+                <p class="text-xs font-bold text-slate-500">Dining</p>
+              </div>
+              <div class="p-4 bg-slate-50 rounded-2xl text-center">
+                <span class="material-symbols-outlined text-primary mb-2">local_parking</span>
+                <p class="text-xs font-bold text-slate-500">Free Parking</p>
+              </div>
             </div>
-            <div *ngIf="errorMsg" class="mb-4 p-3 bg-red-500/20 text-red-300 rounded-lg text-sm border border-red-500/30">
-               {{ errorMsg }}
+          </div>
+
+          <!-- Reviews Section -->
+          <div class="space-y-6">
+            <div class="flex items-center justify-between">
+              <h2 class="text-3xl font-bold text-slate-900">User Experiences</h2>
+              <span class="px-4 py-2 bg-slate-200 text-slate-600 rounded-full text-xs font-bold">{{ reviews.length }} Reviews</span>
             </div>
 
-            <form (submit)="submitReview()" class="space-y-4">
-              <div *ngIf="!isLoggedIn()">
-                <label class="block font-label-bold text-sm mb-1">Guest Name</label>
-                <input type="text" [(ngModel)]="newReview.username" name="username" required
-                       class="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white outline-none focus:ring-2 focus:ring-fithae-yellow" placeholder="Your name">
+            <div *ngFor="let review of reviews" class="bg-white rounded-3xl p-8 shadow-md border border-slate-100">
+              <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
+                    {{ review.username[0].toUpperCase() }}
+                  </div>
+                  <div>
+                    <h4 class="font-bold text-slate-900">{{ review.username }}</h4>
+                    <p class="text-[10px] text-slate-400">{{ review.createdAt | date:'mediumDate' }}</p>
+                  </div>
+                </div>
+                <div class="flex text-fithae-yellow">
+                   <span *ngFor="let s of [1,2,3,4,5]" class="material-symbols-outlined text-sm" 
+                         [style.font-variation-settings]="'\\'FILL\\' ' + (s <= review.rating ? 1 : 0)">star</span>
+                </div>
               </div>
-              
+              <p class="text-slate-600 italic">"{{ review.comment }}"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar (Review Form) -->
+        <div class="space-y-8">
+          <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl sticky top-8">
+            <h3 class="text-2xl font-bold mb-6">Leave a Review</h3>
+            
+            <form (ngSubmit)="onPostReview()" class="space-y-4">
               <div>
-                <label class="block font-label-bold text-sm mb-1">Fit Rating</label>
+                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">Experience Score</label>
                 <div class="flex gap-2">
-                  <span *ngFor="let s of [1,2,3,4,5]" 
-                        class="material-symbols-outlined text-3xl cursor-pointer transition-transform hover:scale-110"
-                        [class.filled-star]="newReview.rating >= s" [class.unfilled-star]="newReview.rating < s"
-                        (click)="newReview.rating = s">star</span>
+                  <button type="button" *ngFor="let r of [1,2,3,4,5]" (click)="newReview.rating = r"
+                    class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center transition-all"
+                    [class.bg-fithae-yellow]="newReview.rating >= r" [class.text-slate-900]="newReview.rating >= r">
+                    {{ r }}
+                  </button>
                 </div>
               </div>
 
               <div>
-                <label class="block font-label-bold text-sm mb-1">Your Story</label>
-                <textarea [(ngModel)]="newReview.comment" name="comment" required
-                          class="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white outline-none focus:ring-2 focus:ring-fithae-yellow h-32 resize-none" 
-                          placeholder="What made your stay exceptional?"></textarea>
+                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">Display Name</label>
+                <input type="text" name="username" [(ngModel)]="newReview.username" 
+                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl outline-none focus:border-fithae-yellow transition-all">
               </div>
 
-              <button type="submit" [disabled]="submitting"
-                      class="w-full py-4 bg-fithae-yellow text-on-surface rounded-xl font-label-bold text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg font-bold">
-                {{ submitting ? 'Publishing...' : 'Publish Review' }}
+              <div>
+                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-white/50 mb-2">Your Story</label>
+                <textarea name="comment" [(ngModel)]="newReview.comment" rows="4"
+                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl outline-none focus:border-fithae-yellow transition-all"
+                  placeholder="Tell us about your stay..."></textarea>
+              </div>
+
+              <div *ngIf="message" class="p-3 bg-white/10 rounded-lg text-xs border border-white/10" [class.text-red-400]="isError" [class.text-fithae-yellow]="!isError">
+                {{ message }}
+              </div>
+
+              <button type="submit" [disabled]="loading"
+                class="w-full py-4 bg-fithae-yellow text-slate-900 rounded-xl font-black hover:bg-white transition-all shadow-lg">
+                {{ loading ? 'POSTING...' : 'SUBMIT REVIEW' }}
               </button>
-              <p class="text-[10px] text-center opacity-50 uppercase tracking-widest mt-2">Verified by FitHae Shield</p>
             </form>
           </div>
-          
-          <div class="bg-surface-container-low p-lg rounded-xl">
-             <h4 class="font-label-bold mb-3">Hotel Info</h4>
-             <ul class="space-y-2 text-sm text-on-surface-variant">
-                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-xs">call</span> +92 51 1234567</li>
-                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-xs">mail</span> info&#64;{{ (hotel?.name || 'hotel').split(' ')[0].toLowerCase() }}.com</li>
-                <li class="flex items-center gap-2"><span class="material-symbols-outlined text-xs">language</span> www.{{ (hotel?.name || 'hotel').split(' ')[0].toLowerCase() }}.com.pk</li>
-             </ul>
-          </div>
-        </aside>
+        </div>
       </div>
-    </main>
-  `,
-  styles: [`
-    .filled-star { color: #FACC15; font-variation-settings: 'FILL' 1; }
-    .unfilled-star { color: #E2E8F0; }
-  `]
+    </div>
+  `
 })
 export class HotelDetailComponent implements OnInit {
   hotel: any;
   reviews: any[] = [];
-  submitting: boolean = false;
-  successMsg: string = '';
-  errorMsg: string = '';
-  showFitHae: boolean = false;
-
   newReview = {
     username: '',
     rating: 5,
     comment: ''
   };
+  loading = false;
+  message = '';
+  isError = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private api: ApiService
-  ) {}
+  constructor(private route: ActivatedRoute, private api: ApiService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.api.getHotelById(id).subscribe(data => {
-        this.hotel = data;
-      });
-      this.fetchReviews(id);
+      this.api.getHotelById(id).subscribe(res => this.hotel = res);
+      this.api.getReviews(id).subscribe(res => this.reviews = res);
+    }
+    
+    const user = this.api.getCurrentUser();
+    if (user) {
+      this.newReview.username = user.fullName || user.username;
     }
   }
 
-  fetchReviews(hotelId: string) {
-    this.api.getReviews(hotelId).subscribe(data => {
-      this.reviews = data;
-    });
-  }
-
-  isLoggedIn() { return this.api.isLoggedIn(); }
-
-  submitReview() {
-    if (!this.hotel) return;
-    this.submitting = true;
-    this.successMsg = '';
-    this.errorMsg = '';
-
-    const payload = {
-      hotelId: this.hotel.id,
-      rating: this.newReview.rating,
-      comment: this.newReview.comment,
-      username: this.isLoggedIn() ? undefined : this.newReview.username
+  onPostReview() {
+    this.loading = true;
+    this.message = '';
+    const user = this.api.getCurrentUser();
+    const reviewData = {
+      ...this.newReview,
+      hotelId: this.hotel._id,
+      userId: user ? user.id : null
     };
 
-    this.api.postReview(payload).subscribe({
+    this.api.postReview(reviewData).subscribe({
       next: (res) => {
-        if (payload.rating === 5) {
-          this.showFitHae = true;
-          setTimeout(() => this.showFitHae = false, 3000);
-        }
-        this.successMsg = 'Review posted successfully!';
-        this.fetchReviews(this.hotel.id);
-        this.newReview = { username: '', rating: 5, comment: '' };
-        this.submitting = false;
+        this.reviews.unshift(res);
+        this.newReview.comment = '';
+        this.message = 'Review posted successfully!';
+        this.isError = false;
+        this.loading = false;
       },
       error: (err) => {
-        this.errorMsg = err.error.message || 'Error posting review.';
-        this.submitting = false;
+        this.message = err.error?.message || 'Error posting review.';
+        this.isError = true;
+        this.loading = false;
       }
     });
   }

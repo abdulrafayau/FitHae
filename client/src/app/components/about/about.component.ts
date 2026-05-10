@@ -6,88 +6,90 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <main class="pt-xxl min-h-screen">
-      <!-- Hero -->
-      <section class="relative py-xxl overflow-hidden bg-surface">
-        <div class="max-w-container-max mx-auto px-lg grid lg:grid-cols-12 gap-xl items-center">
-          <div class="lg:col-span-7 z-10">
-            <span class="font-label-caps text-label-caps text-fithae-pink mb-md block font-bold tracking-widest uppercase">THE FIT VERDICT</span>
-            <h1 class="font-display-lg text-display-lg mb-lg text-on-surface text-5xl">Redefining Hospitality Through <span class="text-fithae-pink italic">Authenticity.</span></h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
-              FitHae was born out of a simple necessity: the need for truth in Pakistan's hotel industry. We provide a curated, editorial-grade review platform that separates excellence from marketing noise.
-            </p>
-          </div>
-          <div class="lg:col-span-5 relative">
-            <div class="aspect-square rounded-2xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500 border-8 border-white">
-              <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800" alt="About">
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Founders -->
-      <section class="py-xxl bg-surface-container-low">
-        <div class="max-w-container-max mx-auto px-lg">
-          <div class="text-center mb-xxl">
-            <h2 class="font-display-lg text-display-lg mb-md text-4xl font-bold">Meet the Founders</h2>
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto">The visionaries behind FitHae, committed to elevating the hospitality standards across Islamabad & Rawalpindi.</p>
-          </div>
-          
-          <div class="grid md:grid-cols-3 gap-lg p-8">
-            <!-- Founder 1 -->
-            <div class="group relative overflow-hidden rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all duration-300">
-              <div class="aspect-[4/5] overflow-hidden">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600" alt="Abdul Rafay">
-              </div>
-              <div class="p-lg">
-                <h4 class="font-headline-md text-headline-md mb-xs text-xl font-bold">Abdul Rafay</h4>
-                <p class="font-label-caps text-label-caps text-fithae-pink mb-md text-xs font-bold uppercase">CO-FOUNDER & CEO</p>
-              </div>
-            </div>
-
-            <!-- Founder 2 -->
-            <div class="group relative overflow-hidden rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all duration-300 md:mt-12">
-              <div class="aspect-[4/5] overflow-hidden">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                     src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600" alt="Sinan M Shoaib">
-              </div>
-              <div class="p-lg">
-                <h4 class="font-headline-md text-headline-md mb-xs text-xl font-bold">Sinan M Shoaib</h4>
-                <p class="font-label-caps text-label-caps text-fithae-pink mb-md text-xs font-bold uppercase">CO-FOUNDER & CTO</p>
-              </div>
-            </div>
-
-            <!-- Founder 3 -->
-            <div class="group relative overflow-hidden rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all duration-300">
-              <div class="aspect-[4/5] overflow-hidden">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=600" alt="Abdul Sattar">
-              </div>
-              <div class="p-lg">
-                <h4 class="font-headline-md text-headline-md mb-xs text-xl font-bold">Abdul Sattar</h4>
-                <p class="font-label-caps text-label-caps text-fithae-pink mb-md text-xs font-bold uppercase">CO-FOUNDER & COO</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="min-h-screen bg-white">
+      <!-- About Hero -->
+      <section class="py-20 bg-slate-900 text-white text-center px-6">
+        <h1 class="text-5xl md:text-7xl font-black mb-6">Our Story</h1>
+        <p class="text-xl text-white/60 max-w-2xl mx-auto italic">"Bringing transparency and premium standards to the hospitality industry of Pakistan."</p>
       </section>
 
       <!-- Mission -->
-      <section class="max-w-container-max mx-auto px-lg my-xxl">
-        <div class="bg-primary-container text-white rounded-3xl p-16 relative overflow-hidden shadow-2xl">
-          <div class="absolute top-0 right-0 w-1/2 h-full opacity-10">
-            <span class="material-symbols-outlined text-[300px] absolute -right-20 -top-20">verified</span>
+      <section class="max-w-4xl mx-auto py-24 px-6 text-center">
+        <h2 class="text-4xl font-bold text-slate-900 mb-8">Ab Har Hotel Hoga FitHae!</h2>
+        <p class="text-lg text-slate-600 leading-relaxed italic mb-12">
+          FitHae was born out of a simple need: finding reliable, verified, and high-quality hotel reviews for travelers visiting Islamabad and Rawalpindi. 
+          We believe that every stay should be premium, every review should be honest, and every user should feel empowered.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="p-8 bg-slate-50 rounded-[2rem]">
+            <h4 class="text-3xl font-black text-primary mb-2">100%</h4>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Verified Reviews</p>
           </div>
-          <div class="relative z-10 md:w-2/3">
-            <div class="bg-fithae-yellow text-on-surface px-4 py-1 rounded-full inline-block font-label-caps mb-8 text-xs font-bold uppercase tracking-widest">Our Vision</div>
-            <h2 class="font-display-lg text-display-lg mb-8 text-4xl">A definitive rating for every stay.</h2>
-            <p class="font-body-lg text-body-lg opacity-80 mb-12 text-lg">Join the thousands of travelers who trust FitHae for honest, reliable, and premium hotel insights across Pakistan.</p>
-            <button class="bg-fithae-pink text-white px-10 py-4 rounded-xl font-label-bold hover:brightness-110 transition-all shadow-lg font-bold">Explore Destinations</button>
+          <div class="p-8 bg-slate-50 rounded-[2rem]">
+            <h4 class="text-3xl font-black text-primary mb-2">50+</h4>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Premium Hotels</p>
+          </div>
+          <div class="p-8 bg-slate-50 rounded-[2rem]">
+            <h4 class="text-3xl font-black text-primary mb-2">24/7</h4>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Local Support</p>
           </div>
         </div>
       </section>
-    </main>
+
+      <!-- Founders Section -->
+      <section class="bg-slate-50 py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+          <h2 class="text-4xl font-bold text-slate-900 mb-16 text-center">Meet the Visionaries</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            
+            <!-- Founder 1 -->
+            <div class="group bg-white rounded-[2.5rem] p-10 text-center shadow-xl hover:shadow-2xl transition-all border border-slate-100">
+              <div class="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-primary/10 group-hover:scale-110 transition-transform">
+                <img src="https://ui-avatars.com/api/?name=Abdul+Rafay&background=0F172A&color=fff&size=128" alt="Abdul Rafay">
+              </div>
+              <h3 class="text-2xl font-bold text-slate-900">Abdul Rafay</h3>
+              <p class="text-primary font-bold text-sm mb-4 italic">Lead Architect & Visionary</p>
+              <p class="text-slate-500 text-sm leading-relaxed">Dedicated to building scalable systems that redefine how we interact with local businesses.</p>
+            </div>
+
+            <!-- Founder 2 -->
+            <div class="group bg-white rounded-[2.5rem] p-10 text-center shadow-xl hover:shadow-2xl transition-all border border-slate-100">
+              <div class="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-primary/10 group-hover:scale-110 transition-transform">
+                <img src="https://ui-avatars.com/api/?name=Sinan+M+Shoaib&background=0F172A&color=fff&size=128" alt="Sinan M Shoaib">
+              </div>
+              <h3 class="text-2xl font-bold text-slate-900">Sinan M Shoaib</h3>
+              <p class="text-primary font-bold text-sm mb-4 italic">UI/UX Strategist</p>
+              <p class="text-slate-500 text-sm leading-relaxed">Crafting immersive digital experiences that blend aesthetics with absolute functionality.</p>
+            </div>
+
+            <!-- Founder 3 -->
+            <div class="group bg-white rounded-[2.5rem] p-10 text-center shadow-xl hover:shadow-2xl transition-all border border-slate-100">
+              <div class="w-32 h-32 rounded-full overflow-hidden mx-auto mb-6 border-4 border-primary/10 group-hover:scale-110 transition-transform">
+                <img src="https://ui-avatars.com/api/?name=Abdul+Sattar&background=0F172A&color=fff&size=128" alt="Abdul Sattar">
+              </div>
+              <h3 class="text-2xl font-bold text-slate-900">Abdul Sattar</h3>
+              <p class="text-primary font-bold text-sm mb-4 italic">Backend Engineer</p>
+              <p class="text-slate-500 text-sm leading-relaxed">Ensuring data integrity and robust security for our growing community of reviewers.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Footer -->
+      <section class="py-20 text-center bg-white border-t border-slate-100">
+        <h2 class="text-3xl font-bold text-slate-900 mb-6">Want to partner with us?</h2>
+        <p class="text-slate-500 mb-8 italic">Contact us at <span class="text-primary font-bold">partners&#64;fithae.pk</span></p>
+        <div class="flex justify-center gap-4">
+          <button class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-primary transition-all">
+            <span class="material-symbols-outlined">share</span>
+          </button>
+          <button class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-primary transition-all">
+            <span class="material-symbols-outlined">call</span>
+          </button>
+        </div>
+      </section>
+    </div>
   `
 })
 export class AboutComponent {}

@@ -18,27 +18,22 @@ router.get('/:hotelId', async (req, res) => {
 // @desc    Add a review (Guest or User)
 router.post('/', async (req, res) => {
     const { hotelId, username, rating, comment, userId } = req.body;
-    const clientIp = req.clientIp; // From request-ip middleware
+    const clientIp = req.clientIp || req.ip;
 
     try {
-        // Check 24 hour limit
+        // 24 hour limit check
         const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        
         let query = { hotelId, createdAt: { $gte: oneDayAgo } };
         
         if (userId) {
             query.userId = userId;
         } else {
             query.guestIp = clientIp;
-            query.userId = null;
         }
 
         const existingReview = await Review.findOne(query);
-
         if (existingReview) {
-            return res.status(429).json({ 
-                message: 'You have already reviewed this hotel in the last 24 hours. Please wait before posting again.' 
-            });
+            return res.status(429).json({ message: 'Only one review per 24 hours is allowed.' });
         }
 
         const newReview = new Review({
